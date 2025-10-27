@@ -1,0 +1,5 @@
+﻿#login-container { margin-top:150px; }
+button { background:white; color:#004d00; border:none; padding:12px 30px; border-radius:10px; font-weight:bold; cursor:pointer; transition:0.3s; }
+button:hover { background:#00a86b; color:white; }
+#userBox { display:none; margin-top:30px; }
+input { padding:10px; border-radius:8px; border:none; width:220px; font-size:16px; text-align:center; }
