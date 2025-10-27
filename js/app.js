@@ -2,7 +2,6 @@
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyC6V2kgHU58J1gcWGSmqxrsly29F56HzDA",
   authDomain: "money-in-the-bank-app.firebaseapp.com",
@@ -12,27 +11,20 @@ const firebaseConfig = {
   appId: "1:690852849677:web:7bd6a3d3f70ee03dbb4d44",
   measurementId: "G-W8P5268HS4"
 };
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// Toast notifications
-function showToast(message, duration=3000) {
-  const toast = document.createElement("div");
-  toast.className = "toast";
-  toast.innerText = message;
-  document.body.appendChild(toast);
-  setTimeout(()=>toast.style.opacity="1",50);
-  setTimeout(()=>{ toast.style.opacity="0"; setTimeout(()=>toast.remove(),300); }, duration);
-}
-
-// Splash → Login → Username → Homepage
+// Splash -> Username page -> Homepage/Admin
 window.addEventListener("load", () => {
-  setTimeout(()=> {
-    document.getElementById("splash").style.display="none";
-    const appDiv = document.getElementById("app");
-    appDiv.innerHTML = `
+  setTimeout(() => {
+    document.getElementById("splash").style.display = "none";
+
+    const mainDiv = document.createElement("div");
+    mainDiv.id = "main";
+    mainDiv.innerHTML = `
       <h2>Sign in with Google</h2>
       <button id="googleLogin">Continue with Google</button>
       <div id="userBox">
@@ -40,37 +32,51 @@ window.addEventListener("load", () => {
         <input type="text" id="usernameInput" placeholder="Enter username" />
         <button id="okBtn">OK</button>
       </div>
+      <div id="adminBox" style="display:none;">
+        <h2>Admin Page</h2>
+        <p>Welcome, Admin!</p>
+      </div>
     `;
+    document.body.appendChild(mainDiv);
+    mainDiv.style.display = "block";
+
     const googleLogin = document.getElementById("googleLogin");
     const userBox = document.getElementById("userBox");
+    const adminBox = document.getElementById("adminBox");
 
-    googleLogin.addEventListener("click", async ()=>{
+    googleLogin.addEventListener("click", async () => {
+      alert("Google Login clicked!");
       try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-        showToast(Signed in as ${user.displayName});
-        googleLogin.style.display="none";
-        userBox.style.display="block";
-      } catch(e){
-        showToast("Login failed: "+e.message);
+        alert(Signed in as ${user.displayName});
+        googleLogin.style.display = "none";
+        userBox.style.display = "block";
+      } catch (err) {
+        alert("Login failed: " + err.message);
       }
     });
 
-    document.getElementById("okBtn").addEventListener("click", async ()=>{
+    document.getElementById("okBtn").addEventListener("click", async () => {
       const username = document.getElementById("usernameInput").value.trim();
-      if(!username) { showToast("Enter a username"); return; }
-      const userRef = doc(db,"users",username);
+      if (!username) return alert("Please enter a username");
+
+      const userRef = doc(db, "users", username);
       const existing = await getDoc(userRef);
-      if(existing.exists()){
-        showToast("Username taken");
+
+      if (existing.exists()) {
+        alert("Username already taken!");
       } else {
-        await setDoc(userRef,{username});
-        showToast(Welcome ${username}!);
-        appDiv.innerHTML = <h1>🏦 Home Page</h1><p>Hello, ${username}</p>;
-        if(username==="admin"){
-          appDiv.innerHTML += <h2>Admin Page</h2><p>All users visible here</p>;
+        await setDoc(userRef, { username });
+        alert(Welcome ${username}!);
+        userBox.style.display = "none";
+
+        if (username.toLowerCase() -eq "admin") {
+          adminBox.style.display = "block";
+        } else {
+          mainDiv.innerHTML = <h1>🏦 Home Page</h1><p>Hello, ${username}!</p>;
         }
       }
     });
-  },3000);
+  }, 3000);
 });

@@ -1,4 +1,9 @@
 ﻿body { margin:0; padding:0; font-family:Poppins,sans-serif; background:linear-gradient(to bottom right,#004d00,#00cc66); color:white; text-align:center; height:100vh; overflow:hidden; }
-#splash { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background-image:url("images/splash.png"); background-size:cover; background-position:center; }
+#splash { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background-image:url("../images/splash.png"); background-size:cover; background-position:center; }
 #splash h1 { background:rgba(0,0,0,0.5); padding:12px 25px; border-radius:10px; font-size:2em; animation:fadeIn 2s ease-in; }
 @keyframes fadeIn { from{opacity:0; transform:scale(0.95);} to{opacity:1; transform:scale(1);} }
+#main { display:none; padding:50px; }
+button { background:white; color:#004d00; border:none; padding:12px 30px; border-radius:10px; font-weight:bold; cursor:pointer; transition:0.3s; margin:10px; }
+button:hover { background:#00a86b; color:white; }
+#userBox { display:none; margin-top:30px; }
+input { padding:10px; border-radius:8px; border:none; width:220px; font-size:16px; text-align:center; margin-top:10px; }
